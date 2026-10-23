@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,6 +50,12 @@ public final class QuickSettingsActivity extends Activity {
         super.onPause();
         finish();
         overridePendingTransition(0, 0);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        SoundManager.getInstance(this).handleKeyEvent(event);
+        return super.dispatchKeyEvent(event);
     }
 
     private void addRow(LinearLayout rows, int icon, int title, int status, Intent target) {

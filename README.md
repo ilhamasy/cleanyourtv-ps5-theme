@@ -180,6 +180,11 @@ Place the image in `launcher/app/src/main/res/drawable-nodpi/wallpaper_<name>.jp
 
 *(Also keep a copy in `wallpapers/<name>.jpg` for quick reference).*
 
+> [!NOTE]
+> **What is the root `/wallpapers` folder for?**
+> - **`res/drawable-nodpi/`**: This is where the Android build system compiles images directly into the APK (`app-deblouting-ps5.apk`).
+> - **`/wallpapers/` (repo root)**: This is your developer asset gallery & staging archive. It keeps your high-resolution original artwork safe outside Gradle's build tree, allowing you to preview, organize, and back up backdrops without touching internal Android directory structures.
+
 #### Step 3: Java Mapping Syntax in `MainActivity.java`
 In [`launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java`](launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java), find the `DOCK_WALLPAPERS` block around line 270:
 
@@ -233,7 +238,23 @@ The screensaver automatically adapts depending on whether you add personal photo
 
 ---
 
-### 3. 📱 Handling "Outside" Apps & Missing Default Apps
+### 3. 🔊 Authentic PS5 UI Sound Effects (Beeps & Clicks)
+The launcher includes an ultra-low-latency `SoundPool` engine playing official PlayStation 5 console UI sound effects:
+
+| Action | Audio File | Trigger |
+|---|---|---|
+| **D-Pad Navigation** | [`sounds/navigation.wav`](sounds/navigation.wav) | Pressing **UP**, **DOWN**, **LEFT**, **RIGHT** on TV remote |
+| **Enter / OK** | [`sounds/enter.wav`](sounds/enter.wav) | Pressing **OK / ENTER** to launch an app, click a tab, or open a menu |
+| **Back / Cancel** | [`sounds/back.wav`](sounds/back.wav) | Pressing **BACK / ESC** on remote, dismissing menus, or returning to Home |
+
+#### 📂 Where are sound files stored?
+- **Root archive**: [`sounds/`](sounds/) holds the master copies of `navigation.wav`, `enter.wav`, and `back.wav`.
+- **Compiled APK resources**: [`launcher/app/src/main/res/raw/`](launcher/app/src/main/res/raw/) (`navigation.wav`, `enter.wav`, `back.wav`) are compiled directly into `app-deblouting-ps5.apk` as 16-bit PCM WAV for 0ms latency audio playback on any TV.
+- **Audio engine**: Managed via [`SoundManager.java`](launcher/app/src/main/java/com/gathin/tvhome/SoundManager.java) with stream pooling, rapid-repeat throttling, and debounce protection.
+
+---
+
+### 4. 📱 Handling "Outside" Apps & Missing Default Apps
 
 #### What if a default dock app is NOT installed on the TV?
 *(e.g. HBO Max is listed in the dock, but the TV doesn't have it installed)*

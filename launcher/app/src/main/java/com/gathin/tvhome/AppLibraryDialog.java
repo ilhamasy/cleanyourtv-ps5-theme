@@ -116,7 +116,13 @@ final class AppLibraryDialog {
         this.onHome = onHome;
         this.changed = changed;
         density = activity.getResources().getDisplayMetrics().density;
-        panel = new LinearLayout(activity);
+        panel = new LinearLayout(activity) {
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent event) {
+                SoundManager.getInstance(activity).handleKeyEvent(event);
+                return super.dispatchKeyEvent(event);
+            }
+        };
         panel.setLayoutDirection(rtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         panel.setOrientation(LinearLayout.VERTICAL);
         panel.setPadding(dp(12), dp(8), dp(12), dp(12));
@@ -336,6 +342,7 @@ final class AppLibraryDialog {
     }
 
     private void open(ResolveInfo app) {
+        SoundManager.getInstance(activity).playEnter();
         close();
         Intent intent = new Intent(Intent.ACTION_MAIN).setComponent(
                 new ComponentName(app.activityInfo.packageName, app.activityInfo.name));
@@ -355,7 +362,15 @@ final class AppLibraryDialog {
         if (spring != null) spring.cancel();
         View menuPanel = activity.getLayoutInflater().inflate(R.layout.popup_inputs, panel, false);
         LinearLayout rows = menuPanel.findViewById(R.id.rows);
-        PopupWindow menu = new PopupWindow(menuPanel, dp(220), ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        FrameLayout actionContainer = new FrameLayout(activity) {
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent event) {
+                SoundManager.getInstance(activity).handleKeyEvent(event);
+                return super.dispatchKeyEvent(event);
+            }
+        };
+        actionContainer.addView(menuPanel);
+        PopupWindow menu = new PopupWindow(actionContainer, dp(220), ViewGroup.LayoutParams.WRAP_CONTENT, true);
         actionPopup = menu;
         menu.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         menu.setOutsideTouchable(true);

@@ -375,6 +375,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         sourcePanelService = cfg.sourcePanelService;
         sourcePanelAction = cfg.sourcePanelAction;
 
+        SoundManager.getInstance(this); // Pre-warm low-latency PS5 sound effects
+
         root = findViewById(R.id.root);
         root.setBackgroundColor(cfg.backgroundColor);
         // root fills the window with an opaque colour (Config keeps background_color opaque), so the window's own
@@ -1017,6 +1019,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        SoundManager.getInstance(this).release();
         statsExecutor.shutdown();
         wallpaperPlayer.close();
         ConnectivityManager cm = getSystemService(ConnectivityManager.class);
@@ -1060,6 +1063,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      */
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        SoundManager.getInstance(this).handleKeyEvent(event);
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             int code = event.getKeyCode();
             if ((code == KeyEvent.KEYCODE_BACK || code == KeyEvent.KEYCODE_ESCAPE) && isAppsTab) {
@@ -1317,6 +1321,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     @Override
     public void onBackPressed() {
+        SoundManager.getInstance(this).playBack();
         // Home screen: Back goes nowhere.
     }
 
@@ -2846,7 +2851,15 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     }
 
     private PopupWindow glassPopup(View panel, int width) {
-        final PopupWindow popup = new PopupWindow(panel, width, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        FrameLayout container = new FrameLayout(this) {
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent event) {
+                SoundManager.getInstance(MainActivity.this).handleKeyEvent(event);
+                return super.dispatchKeyEvent(event);
+            }
+        };
+        container.addView(panel);
+        final PopupWindow popup = new PopupWindow(container, width, ViewGroup.LayoutParams.WRAP_CONTENT, true);
         popup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));   // needed for Back to dismiss
         popup.setOutsideTouchable(true);
         popup.setAnimationStyle(0);
