@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Ana Ekran</string>
+    <string name="app_name" translatable="false">Norma Launcher</string>
     <string name="inputs">Girişler</string>
     <string name="wifi">Wi-Fi</string>
     <string name="settings">Ayarlar</string>
@@ -18,7 +18,7 @@
     <string name="offline">Çevrimdışı</string>
     <string name="not_available">Bu TV’de kullanılamıyor</string>
     <string name="cant_open">%1$s açılamıyor</string>
-    <string name="date_format">d MMMM EEEE</string>
+    <string name="date_format">d MMMM yyyy EEEE</string>
     <string name="stats_cpu">CPU %1$d%%</string>
     <string name="stats_memory">Bellek %1$d MB boş</string>
     <string name="stats_storage">Depolama %1$s boş</string>

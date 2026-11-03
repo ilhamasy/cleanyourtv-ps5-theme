@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">หน้าแรก</string>
+    <string name="app_name" translatable="false">Norma Launcher</string>
     <string name="inputs">แหล่งสัญญาณ</string>
     <string name="wifi">Wi-Fi</string>
     <string name="settings">ตั้งค่า</string>
@@ -18,7 +18,7 @@
     <string name="offline">ออฟไลน์</string>
     <string name="not_available">ทีวีเครื่องนี้ไม่รองรับ</string>
     <string name="cant_open">เปิด %1$s ไม่ได้</string>
-    <string name="date_format">EEEE  d MMMM</string>
+    <string name="date_format">yyyy EEEE  d MMMM</string>
     <string name="stats_cpu">CPU %1$d%%</string>
     <string name="stats_memory">หน่วยความจำว่าง %1$d MB</string>
     <string name="stats_storage">พื้นที่ว่าง %1$s</string>

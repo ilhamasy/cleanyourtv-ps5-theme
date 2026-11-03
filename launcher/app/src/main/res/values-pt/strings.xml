@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Início</string>
+    <string name="app_name" translatable="false">Norma Launcher</string>
     <string name="inputs">Entradas</string>
     <string name="wifi">Wi-Fi</string>
     <string name="settings">Configurações</string>
@@ -18,7 +18,7 @@
     <string name="offline">Sem conexão</string>
     <string name="not_available">Não disponível nesta TV</string>
     <string name="cant_open">Não foi possível abrir %1$s</string>
-    <string name="date_format">EEEE  d \'de\' MMMM</string>
+    <string name="date_format">yyyy EEEE  d \'de\' MMMM</string>
     <string name="date_format_home">EEEE\nd \'de\' MMMM</string>
     <string name="stats_cpu">CPU %1$d%%</string>
     <string name="stats_memory">Memória %1$d MB livres</string>

@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace 'com.gathin.tvhome'
+    namespace 'com.norma.tvlauncher'
     compileSdk 34
 
     defaultConfig {
         // Opt-in identity for firmware with a package-name HOME allowlist; see docs/devices/xiaomi-mitv-aetp0-dofus.md.
-        applicationId providers.gradleProperty('launcherApplicationId').getOrElse('com.gathin.tvhome')
+        applicationId providers.gradleProperty('launcherApplicationId').getOrElse('com.norma.tvlauncher')
         minSdk 26
         targetSdk 34
         versionCode 6
@@ -41,15 +41,20 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "app-deblouting-ps5.apk"
+            outputFileName = "norma-tv-launcher.apk"
         }
         if (variant.buildType.name == 'release') {
             variant.assembleProvider.configure {
                 doLast {
                     copy {
-                        from "${layout.buildDirectory.get()}/outputs/apk/release/app-deblouting-ps5.apk"
+                        from "${layout.buildDirectory.get()}/outputs/apk/release/norma-tv-launcher.apk"
                         into "${layout.buildDirectory.get()}/outputs/apk/release"
                         rename { "app-release.apk" }
+                    }
+                    copy {
+                        from "${layout.buildDirectory.get()}/outputs/apk/release/norma-tv-launcher.apk"
+                        into "${rootDir}/.."
+                        rename { "norma-tv-launcher.apk" }
                     }
                 }
             }

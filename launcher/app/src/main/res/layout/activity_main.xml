@@ -6,7 +6,7 @@
     android:background="#FF000000">
 
     <!-- Time-of-day backdrop, drawn once a minute (config.xml sky_intensity; 0 keeps it hidden). -->
-    <com.gathin.tvhome.SkyView
+    <com.norma.tvlauncher.SkyView
         android:id="@+id/sky"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -54,6 +54,16 @@
         android:layout_height="match_parent"
         android:background="@drawable/wallpaper_scrim"
         android:alpha="0"
+        android:importantForAccessibility="no" />
+
+    <!-- Darkening scrim for edit mode (reorder apps or remove dock app) -->
+    <View
+        android:id="@+id/editModeScrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#B8000000"
+        android:alpha="0"
+        android:visibility="gone"
         android:importantForAccessibility="no" />
 
     <!-- Race-weekend panel (a theme's race_calendar, see RaceWeekend): in the free space under the clock,
@@ -170,59 +180,53 @@
                 android:layout_height="0dp"
                 android:visibility="gone" />
 
-            <!-- First layer left side: horizontal tab Home and App (hidden) -->
+            <!-- Hidden tabs preserved for legacy bindings -->
             <LinearLayout
                 android:id="@+id/topTabs"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone">
+                <TextView android:id="@+id/tabHome" android:layout_width="0dp" android:layout_height="0dp" />
+                <TextView android:id="@+id/tabApp" android:layout_width="0dp" android:layout_height="0dp" />
+            </LinearLayout>
+
+            <!-- First layer left side: Date and Time -->
+            <LinearLayout
+                android:id="@+id/dateTimeBlock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="vertical"
+                android:gravity="start">
 
-                <TextView
-                    android:id="@+id/tabHome"
+                <TextClock
+                    android:id="@+id/clock"
                     android:layout_width="wrap_content"
-                    android:layout_height="42dp"
-                    android:gravity="center"
-                    android:text="Home"
-                    android:textSize="16sp"
+                    android:layout_height="wrap_content"
+                    android:format12Hour="h:mm a"
+                    android:format24Hour="HH:mm"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="20sp"
                     android:fontFamily="@font/inter_medium"
                     android:letterSpacing="0.02"
-                    android:textColor="@drawable/tab_item_text"
-                    android:focusable="false"
-                    android:clickable="false"
-                    android:paddingStart="18dp"
-                    android:paddingEnd="18dp"
-                    android:background="@drawable/tab_item_bg"
-                    android:nextFocusRight="@+id/tabApp"
-                    android:nextFocusDown="@+id/grid" />
+                    android:includeFontPadding="false" />
 
-                <TextView
-                    android:id="@+id/tabApp"
+                <TextClock
+                    android:id="@+id/date"
                     android:layout_width="wrap_content"
-                    android:layout_height="42dp"
-                    android:gravity="center"
-                    android:layout_marginStart="8dp"
-                    android:text="App"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/inter_medium"
-                    android:letterSpacing="0.02"
-                    android:textColor="@drawable/tab_item_text"
-                    android:focusable="false"
-                    android:clickable="false"
-                    android:paddingStart="18dp"
-                    android:paddingEnd="18dp"
-                    android:background="@drawable/tab_item_bg"
-                    android:nextFocusLeft="@+id/tabHome"
-                    android:nextFocusRight="@+id/btnInputs"
-                    android:nextFocusDown="@+id/appsGrid" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:format12Hour="@string/date_format_home"
+                    android:format24Hour="@string/date_format_home"
+                    android:textColor="#99FFFFFF"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/inter_regular"
+                    android:letterSpacing="0.10"
+                    android:textAllCaps="true" />
             </LinearLayout>
 
-            <!-- First layer container (only logos for Inputs, Wifi, Settings beside Clock & Date) -->
+            <!-- First layer right side: Unified Action Cluster (Weather, Inputs, Wifi, Settings) -->
             <LinearLayout
                 android:id="@+id/topButtons"
                 android:layout_width="wrap_content"
@@ -232,13 +236,79 @@
                 android:gravity="center_vertical"
                 android:clipChildren="false"
                 android:clipToPadding="false"
+                android:descendantFocusability="afterDescendants"
                 android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/weatherPill"
+                    style="@style/TopButtonBase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:layout_marginStart="0dp"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:nextFocusLeft="@+id/weatherPill"
+                    android:nextFocusRight="@+id/btnInputs"
+                    android:nextFocusDown="@+id/grid"
+                    android:contentDescription="@string/weather">
+
+                    <ImageView
+                        android:id="@+id/weatherIcon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_weather_partly_cloudy"
+                        android:tint="@drawable/pill_text"
+                        android:contentDescription="@string/weather"
+                        android:duplicateParentState="true"
+                        android:importantForAccessibility="no" />
+
+                    <TextView
+                        android:id="@+id/weatherTemp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@drawable/pill_text"
+                        android:textSize="15sp"
+                        android:duplicateParentState="true"
+                        android:text="28°C" />
+
+                    <TextView
+                        android:id="@+id/weatherDot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginEnd="6dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@drawable/pill_text"
+                        android:alpha="0.5"
+                        android:textSize="12sp"
+                        android:duplicateParentState="true"
+                        android:text="•" />
+
+                    <TextView
+                        android:id="@+id/weatherCity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@drawable/pill_text"
+                        android:textSize="15sp"
+                        android:duplicateParentState="true"
+                        android:text="Bekasi" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/btnInputs"
                     style="@style/TopButtonIcon"
+                    android:layout_marginStart="10dp"
                     android:contentDescription="@string/inputs"
                     android:drawableStart="@drawable/ic_input"
+                    android:nextFocusLeft="@+id/weatherPill"
+                    android:nextFocusRight="@+id/btnWifi"
                     android:nextFocusDown="@+id/grid" />
 
                 <TextView
@@ -246,6 +316,9 @@
                     style="@style/TopButtonIcon"
                     android:contentDescription="@string/wifi"
                     android:drawableStart="@drawable/ic_wifi"
+                    android:layout_marginStart="10dp"
+                    android:nextFocusLeft="@+id/btnInputs"
+                    android:nextFocusRight="@+id/btnSettings"
                     android:nextFocusDown="@+id/grid" />
 
                 <TextView
@@ -254,6 +327,7 @@
                     android:visibility="gone"
                     android:contentDescription="@string/reorder"
                     android:drawableStart="@drawable/ic_swap_vert"
+                    android:layout_marginStart="10dp"
                     android:nextFocusDown="@+id/grid" />
 
                 <TextView
@@ -262,6 +336,7 @@
                     android:visibility="gone"
                     android:contentDescription="@string/app_library"
                     android:drawableStart="@drawable/ic_apps"
+                    android:layout_marginStart="10dp"
                     android:nextFocusDown="@+id/grid" />
 
                 <TextView
@@ -269,41 +344,10 @@
                     style="@style/TopButtonIcon"
                     android:contentDescription="@string/settings"
                     android:drawableStart="@drawable/ic_settings"
+                    android:layout_marginStart="10dp"
+                    android:nextFocusLeft="@+id/btnWifi"
+                    android:nextFocusRight="@+id/btnSettings"
                     android:nextFocusDown="@+id/grid" />
-
-                <!-- Beside that: small sleek clock and date -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical"
-                    android:gravity="end">
-
-                    <TextClock
-                        android:id="@+id/clock"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:format12Hour="h:mm a"
-                        android:format24Hour="HH:mm"
-                        android:textColor="#FFFFFFFF"
-                        android:textSize="18sp"
-                        android:fontFamily="@font/inter_medium"
-                        android:letterSpacing="0.02"
-                        android:includeFontPadding="false" />
-
-                    <TextClock
-                        android:id="@+id/date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
-                        android:format12Hour="@string/date_format_home"
-                        android:format24Hour="@string/date_format_home"
-                        android:textColor="#99FFFFFF"
-                        android:textSize="11sp"
-                        android:fontFamily="@font/inter_regular"
-                        android:letterSpacing="0.10"
-                        android:textAllCaps="true" />
-                </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
 
@@ -319,7 +363,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/grid"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="start|top"
                 android:paddingTop="10dp"
@@ -328,7 +372,10 @@
                 android:clipChildren="false"
                 android:overScrollMode="never"
                 android:scrollbars="none"
-                android:descendantFocusability="afterDescendants" />
+                android:descendantFocusability="afterDescendants"
+                android:focusable="true">
+                <requestFocus />
+            </androidx.recyclerview.widget.RecyclerView>
 
             <!-- App page: 5-column grid for ALL apps -->
             <androidx.recyclerview.widget.RecyclerView
@@ -468,8 +515,255 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- All Apps Modal Popup Overlay with Blurred Backdrop -->
+    <FrameLayout
+        android:id="@+id/allAppsModalOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="false"
+        android:elevation="35dp">
+
+        <!-- Blurred Background ImageView -->
+        <ImageView
+            android:id="@+id/allAppsBlurredBackdrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:importantForAccessibility="no" />
+
+        <!-- Frosted Scrim Dim Overlay -->
+        <View
+            android:id="@+id/allAppsBackdropScrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#B8050508"
+            android:importantForAccessibility="no" />
+
+        <!-- Centered Modal Glass Panel (5 x 5 layout) -->
+        <LinearLayout
+            android:id="@+id/allAppsModalPanel"
+            android:layout_width="820dp"
+            android:layout_height="450dp"
+            android:layout_gravity="center"
+            android:background="@drawable/glass_panel"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:elevation="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <!-- Modal Header -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_apps"
+                        android:layout_marginEnd="10dp"
+                        android:tint="#FFFFFFFF" />
+
+                    <TextView
+                        android:id="@+id/allAppsModalTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/all_apps"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="22sp"
+                        android:fontFamily="@font/inter_semibold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/allAppsCountBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/inter_medium"
+                    android:background="@drawable/pill_badge_bg"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp" />
+            </RelativeLayout>
+
+            <!-- 5-column small icon grid -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/allAppsModalGrid"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:clipChildren="false"
+                android:overScrollMode="never"
+                android:scrollbars="none"
+                android:focusable="true"
+                android:descendantFocusability="afterDescendants" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Internal Storage File Browser Modal Overlay -->
+    <FrameLayout
+        android:id="@+id/fileBrowserOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="false"
+        android:elevation="36dp">
+
+        <!-- Blurred Background ImageView -->
+        <ImageView
+            android:id="@+id/fileBrowserBlurredBackdrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:importantForAccessibility="no" />
+
+        <!-- Frosted Scrim Dim Overlay -->
+        <View
+            android:id="@+id/fileBrowserBackdropScrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#B8050508"
+            android:importantForAccessibility="no" />
+
+        <!-- Centered Modal Glass Panel -->
+        <LinearLayout
+            android:id="@+id/fileBrowserModalPanel"
+            android:layout_width="820dp"
+            android:layout_height="480dp"
+            android:layout_gravity="center"
+            android:background="@drawable/glass_panel"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="16dp"
+            android:elevation="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <!-- Modal Header -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_folder"
+                        android:layout_marginEnd="10dp"
+                        android:tint="#FFFFFFFF" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/fileBrowserTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Choose Wallpaper"
+                            android:textColor="#FFFFFFFF"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/inter_semibold" />
+
+                        <TextView
+                            android:id="@+id/fileBrowserPath"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="/sdcard"
+                            android:textColor="#88FFFFFF"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/inter_regular"
+                            android:singleLine="true"
+                            android:ellipsize="middle" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/fileBrowserItemCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/inter_medium"
+                    android:background="@drawable/pill_badge_bg"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp" />
+            </RelativeLayout>
+
+            <!-- File List RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fileBrowserList"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:clipChildren="false"
+                android:overScrollMode="never"
+                android:scrollbars="none"
+                android:focusable="true"
+                android:descendantFocusability="afterDescendants" />
+
+            <!-- Empty Notice -->
+            <TextView
+                android:id="@+id/fileBrowserEmptyText"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="No images or subfolders found"
+                android:textColor="#66FFFFFF"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <!-- Footer Hint -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Select an image (.jpg, .png, .webp) \u00B7 BACK to go up or exit"
+                android:textColor="#55FFFFFF"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </FrameLayout>
+
     <!-- The single floating glass highlight that springs between tiles. -->
-    <com.gathin.tvhome.GlassView
+    <com.norma.tvlauncher.GlassView
         android:id="@+id/glass"
         android:layout_width="10dp"
         android:layout_height="10dp"

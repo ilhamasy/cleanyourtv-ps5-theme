@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Home</string>
+    <string name="app_name" translatable="false">Norma Launcher</string>
     <string name="inputs">Inputs</string>
     <string name="wifi">Wi-Fi</string>
     <string name="settings">Settings</string>
@@ -18,7 +18,7 @@
     <string name="offline">Offline</string>
     <string name="not_available">Not available on this TV</string>
     <string name="cant_open">Can\'t open %1$s</string>
-    <string name="date_format">EEEE  d MMMM</string>
+    <string name="date_format">EEEE, d MMMM yyyy</string>
     <!-- Date next to the clock on Home; a locale can split it over two lines with \n. -->
     <string name="date_format_home" translatable="false">@string/date_format</string>
     <string name="stats_cpu">CPU %1$d%%</string>
@@ -28,7 +28,14 @@
     <string name="vpn">VPN</string>
     <string name="vpn_off">VPN off</string>
     <string name="home_settings">Choose default home</string>
-    <string name="home_settings_help">Select your original home to stop using CleanYourTV as Home, or CleanYourTV to switch back. The original launcher must be enabled and your TV must provide a home picker; use the restore script first if it was disabled.</string>
+    <string name="home_settings_help">Select your original home to stop using Norma Launcher as Home, or Norma Launcher to switch back. The original launcher must be enabled and your TV must provide a home picker; use the restore script first if it was disabled.</string>
+    <string name="set_default_launcher">Set as default launcher</string>
+    <string name="default_launcher_active">Default launcher: Active ✓</string>
+    <string name="prompt_default_launcher_title">Set as Default Launcher</string>
+    <string name="prompt_default_launcher_body">Norma Launcher needs to be set as your default home app so your TV automatically opens this screen whenever it turns on or when you press the Home button on your remote.</string>
+    <string name="prompt_default_launcher_action">Set as Default</string>
+    <string name="prompt_default_launcher_later">Later</string>
+    <string name="default_launcher_success">Norma Launcher is now your default home launcher ✓</string>
     <string name="launcher_settings">Launcher settings</string>
     <string name="columns_label">Apps per row</string>
     <string name="rows_below_dock_label">Rows below dock</string>
@@ -41,7 +48,7 @@
     <string name="advanced_effects">Advanced effects</string>
     <string name="advanced_effects_state">Advanced effects: %1$s</string>
     <string name="advanced_effects_warning">Adds a lifted tile, icon zoom and smooth colour transitions. May increase memory use; the actual difference depends on your TV.</string>
-    <string name="follow_theme">Follow theme (reset on-TV choices)</string>
+    <string name="follow_theme">Reset theme launcher</string>
     <string name="follow_theme_hint">Uses the current theme or built-in layout and motion settings. Pushing or resetting a theme also clears your on-TV choices.</string>
     <string name="tv_settings">TV system settings</string>
     <string name="quick_picture">Display</string>
@@ -76,6 +83,12 @@
     <string name="dock_edit">Edit dock</string>
     <string name="dock_edit_hint">Choose the dock place to change and press OK. Back to finish.</string>
     <string name="dock_edit_pick_app">Now choose the app to put there and press OK. Back to choose another place.</string>
+    <string name="dock_add">Add Apps on Docks</string>
+    <string name="dock_wallpaper_change">Change wallpaper apps dock</string>
+    <string name="dock_remove">Remove app from dock</string>
+    <string name="dock_remove_hint">Select an app to remove and press OK. Back to finish.</string>
+    <string name="dock_remove_min_error">Cannot remove the only app on the dock</string>
+    <string name="all_apps">All Apps</string>
     <string name="reorder">Reorder apps</string>
     <string name="reorder_hint">OK picks up an app, arrows move it, Back places it. Back again to finish.</string>
     <string name="reorder_not_saved">Couldn\'t save the new order</string>
@@ -107,4 +120,6 @@
     <!-- Cinematic top shelf (cinematic_home): the line under the focused dock app's name; %1$s is when it was
          last opened, e.g. "5 minutes ago" or "yesterday, 9:40 pm". -->
     <string name="last_opened">Last opened %1$s</string>
+    <string name="weather">Weather</string>
+    <string name="refresh_weather">Refresh Weather</string>
 </resources>

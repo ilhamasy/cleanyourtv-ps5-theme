@@ -17,8 +17,13 @@ backup/
 
 # Generated install bundles and JVM crash reports stay out of contributions.
 *.apk
-!app-deblouting-ps5.apk
-!app-release.apk
+!norma-tv-launcher.apk
 *.aab
 launcher/hs_err_pid*.log
 launcher/replay_pid*.log
+
+# Screen recording & inspection helper scripts
+do_recording.py
+inspect_all_seconds.swift
+run_navigation.sh
+
